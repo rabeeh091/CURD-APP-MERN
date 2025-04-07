@@ -2,12 +2,23 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const UserModel = require('./models/Users')
+const dotenv = require('dotenv')
+
+dotenv.config(); //Load environment variables from .env
 
 const app = express()
 app.use(cors())
 app.use(express.json())
 
-mongoose.connect("mongodb://127.0.0.1:27017/crud")
+const MONGO_URL = process.env.MONGO_URL;
+const PORT = process.env.PORT || 3001;
+
+mongoose.connect(MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log("connected to MongoDB"))
+.catch(err => console.log("MongoDB connection error:", err));
 
 app.get('/', (req, res) => {
     UserModel.find({})
